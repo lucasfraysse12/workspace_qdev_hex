@@ -1,8 +1,11 @@
 package ctrl;
 
 import hex.Coords;
+import hex.Joueur;
 import hex.MouvementImpossibleException;
 import hex.PartieHex;
+import hex.ia.StrategieIA;
+import hex.ia.StrategiePCC;
 import ihm.IHMConsole;
 
 public class Gestionnaire implements GestionnaireDePartie {
@@ -10,6 +13,7 @@ public class Gestionnaire implements GestionnaireDePartie {
 	private static Gestionnaire instance = new Gestionnaire();
 	private IHMConsole ihm;
 	private PartieHex partie;
+	private StrategieIA strat2 = new StrategiePCC();
 	 
 	private Gestionnaire() {
 		this.ihm = new IHMConsole();
@@ -30,7 +34,9 @@ public class Gestionnaire implements GestionnaireDePartie {
 
 	}
 	
-	
+	public void setStrat2(StrategieIA strat2) {
+		this.strat2 = strat2;
+	}
 
 	@Override
 	public void jouer() {
@@ -38,7 +44,18 @@ public class Gestionnaire implements GestionnaireDePartie {
 		while (!this.partie.estFini()) {
 			ihm.actualiserPlateau(this.partie.getPlateau());
 			ihm.afficherInfos(this.partie);
-			Coords c = ihm.demanderPlacement(this.partie.getPlateau());
+			Coords c;
+			if (this.partie.getAQuiDeJouer() == Joueur.JOUEUR2) {
+				if (this.strat2!=null) {
+					c = ihm.demanderPlacement(this.partie.getPlateau());
+				} else {
+					c = this.strat2.choisirCase(partie);
+				}
+				
+				
+			} else {
+				c = ihm.demanderPlacement(this.partie.getPlateau());
+			}
 			try {
 				this.partie.poserJeton(c);
 			} catch (MouvementImpossibleException e) {

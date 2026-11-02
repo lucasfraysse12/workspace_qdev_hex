@@ -6,6 +6,7 @@ import hex.PlateauHex;
 import hex.affich.AffichageInformationsDuTour;
 import hex.affich.AffichagePlateau;
 import hex.affich.DemanderProchainCoup;
+import hex.ia.StrategieIA;
 
 public class IHMConsole implements IHM {
 
@@ -23,8 +24,12 @@ public class IHMConsole implements IHM {
 
 	@Override
 	public Coords demanderPlacement(PlateauHex plateau) {
-		System.out.println(DemanderProchainCoup.promptCase(plateau));
-		return null;
+		return DemanderProchainCoup.promptCase(plateau);
+		
+	}
+	
+	public StrategieIA demanderStrategieJoueur2() {
+		List<String> choixDisponibles = new ArrayList<>();
 	}
 
 }
