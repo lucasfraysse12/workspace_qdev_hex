@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.FacadeStrategieIA;
-import bot.StrategieHasard;
+//import bot.StrategieHasard;
 import bot.StrategieIAObservable;
 import hex.Coords;
 import hex.PartieHex;
@@ -71,9 +71,7 @@ public class IHMConsole implements IHM {
 		StrategieIAObservable strat;
 		
 		switch (i) {
-		case 0:
-			strat = new FacadeStrategieIA("Extrêmement facile", new StrategieHasard());
-			break;
+		
 		case 1:
 			strat = new FacadeStrategieIA("Très facile", new StrategiePCC());
 			break;
