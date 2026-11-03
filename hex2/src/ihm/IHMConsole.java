@@ -6,6 +6,8 @@ package ihm;
 import java.util.ArrayList;
 import java.util.List;
 
+import bot.FacadeStrategieIA;
+import bot.StrategieIAObservable;
 import hex.Coords;
 import hex.PartieHex;
 import hex.PlateauHex;
@@ -38,11 +40,11 @@ public class IHMConsole implements IHM {
 	}
 
 	@Override
-	public StrategieIA demanderStrategieJoueur1() {
+	public StrategieIAObservable demanderStrategieJoueur1() {
 		return this.demanderStrategie(1);		
 	}
 	@Override
-	public StrategieIA demanderStrategieJoueur2() {
+	public StrategieIAObservable demanderStrategieJoueur2() {
 		return this.demanderStrategie(2);
 	}
 	
@@ -53,7 +55,7 @@ public class IHMConsole implements IHM {
 	 * @param numJoueur Numéro du joueur (pour l'affichage)
 	 * @return Stratégie choisie
 	 */
-	private StrategieIA demanderStrategie (int numJoueur) {
+	private StrategieIAObservable demanderStrategie (int numJoueur) {
 		
 		List<String> choixDisponibles = new ArrayList<>();
 		choixDisponibles.add("Très facile");
@@ -62,17 +64,17 @@ public class IHMConsole implements IHM {
 		choixDisponibles.add("Humain");
 		
 		int i = Menu.promptChoix("Choisir le joueur " + numJoueur + " :", choixDisponibles);
-		StrategieIA strat;
+		StrategieIAObservable strat;
 		
 		switch (i) {
 		case 0:
-			strat = new StrategiePCC();
+			strat = new FacadeStrategieIA("très facile", new StrategiePCC());
 			break;
 		case 1:
-			strat = new StrategiePCCCritique();
+			strat = new FacadeStrategieIA("facile", new StrategiePCCCritique());
 			break;
 		case 2:
-			strat = new StrategiePCCInter();
+			strat = new FacadeStrategieIA("moyen", new StrategiePCCInter());
 			break;
 		default:
 			strat = null;
@@ -80,6 +82,13 @@ public class IHMConsole implements IHM {
 		}
 		
 		return strat;
+		
+	}
+
+	@Override
+	public void notifier(StrategieIAObservable notificateur) {
+		
+		System.out.println("La strategie " + notificateur.getNom() + "s'est activée.");
 		
 	}
 

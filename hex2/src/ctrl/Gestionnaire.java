@@ -3,6 +3,7 @@
  */
 package ctrl;
 
+import bot.StrategieIAObservable;
 import hex.Coords;
 import hex.Joueur;
 import hex.MouvementImpossibleException;
@@ -44,14 +45,14 @@ public class Gestionnaire implements GestionnaireDePartie {
 	
 	
 	
-	private StrategieIA strat1;
-	private StrategieIA strat2;
+	private StrategieIAObservable strat1;
+	private StrategieIAObservable strat2;
 
-	public void setStrat2(StrategieIA strat2) {
+	public void setStrat2(StrategieIAObservable strat2) {
 		this.strat2 = strat2;
 	}
 
-	public void setStrat1(StrategieIA strat1) {
+	public void setStrat1(StrategieIAObservable strat1) {
 		this.strat1 = strat1;
 	}
 	
