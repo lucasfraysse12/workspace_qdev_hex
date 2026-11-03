@@ -11,9 +11,11 @@ public class Lanceur {
 		
 		Gestionnaire ctrl = Gestionnaire.getInstance();
 		
-		ctrl.nouvellePartie(10);
+		//AffichageJeton.setAffichageJeton(Joueur.JOUEUR1, "○");
+		//AffichageJeton.setAffichageJeton(Joueur.JOUEUR2, "■");
 		
-	
+		ctrl.nouvellePartie(6);
+		
 		ctrl.jouer();
 	
 	}

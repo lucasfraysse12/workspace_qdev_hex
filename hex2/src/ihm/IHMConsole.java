@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bot.FacadeStrategieIA;
+import bot.StrategieHasard;
 import bot.StrategieIAObservable;
 import hex.Coords;
 import hex.PartieHex;
@@ -15,7 +16,6 @@ import hex.affich.AffichageInformationsDuTour;
 import hex.affich.AffichagePlateau;
 import hex.affich.DemanderProchainCoup;
 import hex.affich.Menu;
-import hex.ia.StrategieIA;
 import hex.ia.StrategiePCC;
 import hex.ia.StrategiePCCCritique;
 import hex.ia.StrategiePCCInter;
@@ -26,10 +26,12 @@ public class IHMConsole implements IHM {
 	public void actualiserPlateau(PlateauHex plateau) {
 		String str = AffichagePlateau.plateau2string(plateau);
 		System.out.println(str);
+		System.out.flush();
 	}
 
 	@Override
 	public void afficherInfos(PartieHex partie) {
+		System.out.println("");
 		String str = AffichageInformationsDuTour.getStringInfo(partie);
 		System.out.println(str);
 	}
@@ -56,25 +58,30 @@ public class IHMConsole implements IHM {
 	 * @return Stratégie choisie
 	 */
 	private StrategieIAObservable demanderStrategie (int numJoueur) {
-		
+			
 		List<String> choixDisponibles = new ArrayList<>();
+		choixDisponibles.add("Extrêmement facile");
 		choixDisponibles.add("Très facile");
 		choixDisponibles.add("Facile");
 		choixDisponibles.add("Moyen");
 		choixDisponibles.add("Humain");
 		
 		int i = Menu.promptChoix("Choisir le joueur " + numJoueur + " :", choixDisponibles);
+		
 		StrategieIAObservable strat;
 		
 		switch (i) {
 		case 0:
-			strat = new FacadeStrategieIA("très facile", new StrategiePCC());
+			strat = new FacadeStrategieIA("Extrêmement facile", new StrategieHasard());
 			break;
 		case 1:
-			strat = new FacadeStrategieIA("facile", new StrategiePCCCritique());
+			strat = new FacadeStrategieIA("Très facile", new StrategiePCC());
 			break;
 		case 2:
-			strat = new FacadeStrategieIA("moyen", new StrategiePCCInter());
+			strat = new FacadeStrategieIA("Facile", new StrategiePCCCritique());
+			break;
+		case 3:
+			strat = new FacadeStrategieIA("Moyen", new StrategiePCCInter());
 			break;
 		default:
 			strat = null;
@@ -87,9 +94,7 @@ public class IHMConsole implements IHM {
 
 	@Override
 	public void notifier(StrategieIAObservable notificateur) {
-		
-		System.out.println("La strategie " + notificateur.getNom() + "s'est activée.");
-		
+		System.out.println("La stratégie '" + notificateur.getNom() + "' s'est activée.");
 	}
 
 	

@@ -8,8 +8,6 @@ import hex.Coords;
 import hex.Joueur;
 import hex.MouvementImpossibleException;
 import hex.PartieHex;
-import hex.ia.StrategieIA;
-import hex.ia.StrategiePCC;
 import ihm.IHM;
 import ihm.IHMConsole;
 
@@ -35,27 +33,34 @@ public class Gestionnaire implements GestionnaireDePartie {
 	
 	/* Equivalent de la vue */
 	private IHM ihm = new IHMConsole();
-	
-	public void nouvellePartie(int taillePlateau) {
-		this.partieActuelle = new PartieHex(taillePlateau);
-		this.strat1 = this.ihm.demanderStrategieJoueur1();
-		this.strat2 = this.ihm.demanderStrategieJoueur2();
-	}
-	
-	
-	
-	
+
+	/* Stratégies des joueurs 1 et 2 */
 	private StrategieIAObservable strat1;
 	private StrategieIAObservable strat2;
 
-	public void setStrat2(StrategieIAObservable strat2) {
-		this.strat2 = strat2;
-	}
+
 
 	public void setStrat1(StrategieIAObservable strat1) {
 		this.strat1 = strat1;
+		if (this.strat1 != null) {
+			this.strat1.ajouterObservateur(this.ihm);
+		}
+	}
+	public void setStrat2(StrategieIAObservable strat2) {
+		this.strat2 = strat2;
+		if (this.strat2 != null) {
+			this.strat2.ajouterObservateur(this.ihm);
+		}
 	}
 	
+	
+	
+	
+	public void nouvellePartie(int taillePlateau) {
+		this.partieActuelle = new PartieHex(taillePlateau);
+		this.setStrat1(this.ihm.demanderStrategieJoueur1());
+		this.setStrat2(this.ihm.demanderStrategieJoueur2());
+	}
 	
 
 	public void jouer() {
