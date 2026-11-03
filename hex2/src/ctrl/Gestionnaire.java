@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package ctrl;
 
 import hex.Coords;
@@ -6,66 +9,112 @@ import hex.MouvementImpossibleException;
 import hex.PartieHex;
 import hex.ia.StrategieIA;
 import hex.ia.StrategiePCC;
+import ihm.IHM;
 import ihm.IHMConsole;
 
 public class Gestionnaire implements GestionnaireDePartie {
-
+	
+	
 	private static Gestionnaire instance = new Gestionnaire();
-	private IHMConsole ihm;
-	private PartieHex partie;
-	private StrategieIA strat2 = new StrategiePCC();
-	 
-	private Gestionnaire() {
-		this.ihm = new IHMConsole();
-	}
+	
+	private Gestionnaire() {}
 	
 	public static Gestionnaire getInstance() {
-			
-		return instance;
+		return Gestionnaire.instance;
 	}
 	
 	
 	
 	
 	
-	@Override
+	
+	
+	/* Equivalent du modèle */
+	private PartieHex partieActuelle;
+	
+	/* Equivalent de la vue */
+	private IHM ihm = new IHMConsole();
+	
 	public void nouvellePartie(int taillePlateau) {
-		this.partie = new PartieHex(taillePlateau);
-
+		this.partieActuelle = new PartieHex(taillePlateau);
+		this.strat1 = this.ihm.demanderStrategieJoueur1();
+		this.strat2 = this.ihm.demanderStrategieJoueur2();
 	}
 	
+	
+	
+	
+	private StrategieIA strat1;
+	private StrategieIA strat2;
+
 	public void setStrat2(StrategieIA strat2) {
 		this.strat2 = strat2;
 	}
 
-	@Override
-	public void jouer() {
+	public void setStrat1(StrategieIA strat1) {
+		this.strat1 = strat1;
+	}
+	
+	
 
-		while (!this.partie.estFini()) {
-			ihm.actualiserPlateau(this.partie.getPlateau());
-			ihm.afficherInfos(this.partie);
+	public void jouer() {
+		
+		while (! this.partieActuelle.estFini()) {
+			
+			ihm.actualiserPlateau(this.partieActuelle.getPlateau());
+			ihm.afficherInfos(this.partieActuelle);
+			
 			Coords c;
-			if (this.partie.getAQuiDeJouer() == Joueur.JOUEUR2) {
-				if (this.strat2!=null) {
-					c = ihm.demanderPlacement(this.partie.getPlateau());
-				} else {
-					c = this.strat2.choisirCase(partie);
+			
+			/* Si c'est à J2 de jouer */
+			if (this.partieActuelle.getAQuiDeJouer() == Joueur.JOUEUR2) {
+				/* Si c'est un humain */
+				if (this.strat2 == null) {
+					c = ihm.demanderPlacement(this.partieActuelle.getPlateau());
 				}
-				
-				
-			} else {
-				c = ihm.demanderPlacement(this.partie.getPlateau());
+				/* Si c'est un bot */
+				else {
+					c = this.strat2.choisirCase(partieActuelle);
+				}
 			}
-			try {
-				this.partie.poserJeton(c);
-			} catch (MouvementImpossibleException e) {
-				System.err.println("Placement impossible");
+			/* Idem pour le joueur 1 */
+			else {				
+				if (this.strat1 == null) {
+					c = ihm.demanderPlacement(this.partieActuelle.getPlateau());
+				}
+				else {
+					c = this.strat1.choisirCase(partieActuelle);
+				}
 			}
 			
+			/* Placement effectif du jeton */
+			try {
+				this.partieActuelle.poserJeton(c);
+			} catch (MouvementImpossibleException e) {
+				e.printStackTrace();
+			}	
+			
+			/* On attend 0.2 seconde pour l'affichage (lorsque deux bots jouent l'un contre l'autre */
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		ihm.actualiserPlateau(this.partie.getPlateau());
-		ihm.afficherInfos(this.partie);
-
+		
+		ihm.actualiserPlateau(this.partieActuelle.getPlateau());
+		ihm.afficherInfos(this.partieActuelle);
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
